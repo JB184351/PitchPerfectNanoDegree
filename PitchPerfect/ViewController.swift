@@ -14,11 +14,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        recordButton.addTarget(self, action: #selector(recordButtonAction(_:)), for: .touchUpInside)
         setupUI()
     }
     
-    @IBAction func recordButtonAction() {
-        
+    // This will start recording the audio when selected
+    @objc func recordButtonAction(_ sender: UIButton) {
+        print("We are recording")
     }
     
     func setupUI() {
