@@ -9,7 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var button = UIButton()
+    var recordButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,30 +17,30 @@ class ViewController: UIViewController {
         setupUI()
     }
     
+    @IBAction func recordButtonAction() {
+        
+    }
+    
     func setupUI() {
-        button.backgroundColor = .green
-        button.sizeToFit()
-        button.setTitle(NSLocalizedString("Record", comment: "Record Button"), for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-        view.addSubview(button)
+        recordButton.backgroundColor = .green
+        recordButton.sizeToFit()
+        recordButton.setTitle(NSLocalizedString("Record", comment: "Record Button"), for: .normal)
+        recordButton.setTitleColor(.systemBlue, for: .normal)
+        view.addSubview(recordButton)
         
         setupConstraints()
     }
     
     func setupConstraints() {
         view.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        
+        recordButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate(
             [
-                button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                button.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+                recordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                recordButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ]
         )
     }
     
-    
 }
-
