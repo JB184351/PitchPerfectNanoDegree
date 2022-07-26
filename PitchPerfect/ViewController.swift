@@ -7,6 +7,10 @@
 
 import UIKit
 
+private enum Constants {
+    static let stopRecordingImageWidth: CGFloat = 64.0
+    static let stopRecordingImageHeight: CGFloat = 64.0
+}
 class ViewController: UIViewController {
     
     var recordingStackView = UIStackView()
@@ -19,35 +23,40 @@ class ViewController: UIViewController {
         view.backgroundColor = .white
         recordButton.addTarget(self, action: #selector(recordButtonAction(_:)), for: .touchUpInside)
         stopRecordingButton.addTarget(self, action: #selector(stopRecordingButtonAction(_:)), for: .touchUpInside)
+        stopRecordingButton.isEnabled = false
+        recordButton.isEnabled = true
         setupUI()
     }
     
     // This will start recording the audio when selected
     @objc func recordButtonAction(_ sender: AnyObject) {
-        print("We are recording")
+        stopRecordingButton.isEnabled = true
+        recordButton.isEnabled = false
+        recordMessageLabel.text = NSLocalizedString("Recording In Progress", comment: "There is a current audio recordding")
     }
     
     @objc func stopRecordingButtonAction(_ sender: AnyObject) {
-        print("Stop recording")
+        stopRecordingButton.isEnabled = false
+        recordButton.isEnabled = true
+        recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
     }
     
     func setupUI() {
         recordingStackView.axis = .vertical
-        recordingStackView.alignment = .fill
-        recordingStackView.distribution = .fillEqually
+        recordingStackView.alignment = .center
+        recordingStackView.distribution = .fill
         recordingStackView.spacing = 8
         
-        recordButton.backgroundColor = .green
         recordButton.sizeToFit()
-        recordButton.setTitle(NSLocalizedString("Record", comment: "Record Button"), for: .normal)
         recordButton.setTitleColor(.systemBlue, for: .normal)
+        recordButton.setImage(UIImage(named: "RecordButton"), for: .normal)
         
         recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
         recordMessageLabel.textColor = .black
         recordMessageLabel.textAlignment = .center
         
-        stopRecordingButton.setTitle(NSLocalizedString("Stop Recording", comment: "App Stops Recording Audio When Pressed"), for: .normal)
-        stopRecordingButton.setTitleColor(.blue, for: .normal)
+        stopRecordingButton.setTitleColor(.systemBlue, for: .normal)
+        stopRecordingButton.setImage(UIImage(named: "Stop"), for: .normal)
         
         view.addSubview(recordingStackView)
         recordingStackView.addArrangedSubview(recordButton)
@@ -59,11 +68,14 @@ class ViewController: UIViewController {
     
     func setupConstraints() {
         recordingStackView.translatesAutoresizingMaskIntoConstraints = false
+        stopRecordingButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate(
             [
                 recordingStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                recordingStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+                recordingStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                stopRecordingButton.widthAnchor.constraint(equalToConstant: Constants.stopRecordingImageWidth),
+                stopRecordingButton.heightAnchor.constraint(equalToConstant: Constants.stopRecordingImageHeight)
             ]
         )
     }
