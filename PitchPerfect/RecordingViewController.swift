@@ -13,10 +13,10 @@ private enum Constants {
 }
 class RecordingViewController: UIViewController {
     
-    var recordingStackView = UIStackView()
-    var recordButton = UIButton()
-    var recordMessageLabel = UILabel()
-    var stopRecordingButton = UIButton()
+    private var recordingStackView = UIStackView()
+    private var recordButton = UIButton()
+    private var recordMessageLabel = UILabel()
+    private var stopRecordingButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
