@@ -48,14 +48,12 @@ class RecordingViewController: UIViewController {
         recordingStackView.spacing = 8
         
         recordButton.sizeToFit()
-        recordButton.setTitleColor(.systemBlue, for: .normal)
         recordButton.setImage(UIImage(named: "RecordButton"), for: .normal)
         
         recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
         recordMessageLabel.textColor = .black
         recordMessageLabel.textAlignment = .center
         
-        stopRecordingButton.setTitleColor(.systemBlue, for: .normal)
         stopRecordingButton.setImage(UIImage(named: "Stop"), for: .normal)
         
         view.addSubview(recordingStackView)
