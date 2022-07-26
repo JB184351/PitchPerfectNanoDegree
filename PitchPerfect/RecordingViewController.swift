@@ -11,7 +11,7 @@ private enum Constants {
     static let stopRecordingImageWidth: CGFloat = 64.0
     static let stopRecordingImageHeight: CGFloat = 64.0
 }
-class ViewController: UIViewController {
+class RecordingViewController: UIViewController {
     
     var recordingStackView = UIStackView()
     var recordButton = UIButton()
