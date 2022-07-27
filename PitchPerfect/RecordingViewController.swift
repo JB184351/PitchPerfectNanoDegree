@@ -39,6 +39,8 @@ class RecordingViewController: UIViewController {
         stopRecordingButton.isEnabled = false
         recordButton.isEnabled = true
         recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
+        let playbackViewController = PlaybackViewController()
+        self.navigationController?.pushViewController(playbackViewController, animated: true)
     }
     
     func setupUI() {
