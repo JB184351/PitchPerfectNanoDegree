@@ -104,7 +104,7 @@ class RecordingViewController: UIViewController {
 extension RecordingViewController: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         let playbackViewController = PlaybackViewController()
-        playbackViewController.audioRecordingURL = audioRecorder.url
+        playbackViewController.recordedAudioURL = audioRecorder.url
         self.navigationController?.pushViewController(playbackViewController, animated: true)
     }
 }
