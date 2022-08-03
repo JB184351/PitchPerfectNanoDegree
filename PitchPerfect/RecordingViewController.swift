@@ -20,6 +20,7 @@ class RecordingViewController: UIViewController {
     private var recordMessageLabel = UILabel()
     private var stopRecordingButton = UIButton()
     private var audioRecorder: AVAudioRecorder!
+    private let audioEngine = AudioEngine.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,29 +38,12 @@ class RecordingViewController: UIViewController {
         recordButton.isEnabled = false
         recordMessageLabel.text = NSLocalizedString("Recording In Progress", comment: "There is a current audio recordding")
         
-        let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
-        let recordingName = "recordedVoice.wav"
-        let pathArray = [dirPath, recordingName]
-        let filePath = URL(string: pathArray.joined(separator: "/"))
-        
-        let session = AVAudioSession.sharedInstance()
-        try! session.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
-        
-        try! audioRecorder = AVAudioRecorder(url: filePath!, settings: [:])
-        audioRecorder.delegate = self
-        audioRecorder.isMeteringEnabled = true
-        audioRecorder.prepareToRecord()
-        audioRecorder.record()
+        AudioManager.sharedInstance.createNewAudioRecording()
     }
     
     @objc func stopRecordingButtonAction(_ sender: AnyObject) {
-        stopRecordingButton.isEnabled = false
-        recordButton.isEnabled = true
         recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
-        
-        audioRecorder.stop()
-        let audioSession = AVAudioSession.sharedInstance()
-        try! audioSession.setActive(false)
+        audioEngine.stopPlaying()
     }
     
     func setupUI() {
@@ -99,12 +83,4 @@ class RecordingViewController: UIViewController {
         )
     }
     
-}
-
-extension RecordingViewController: AVAudioRecorderDelegate {
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        let playbackViewController = PlaybackViewController()
-        playbackViewController.recordedAudioURL = audioRecorder.url
-        self.navigationController?.pushViewController(playbackViewController, animated: true)
-    }
 }

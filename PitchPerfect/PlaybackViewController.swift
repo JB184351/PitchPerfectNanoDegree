@@ -27,6 +27,7 @@ class PlaybackViewController: UIViewController {
     let darthVaderPlaybackButton = UIButton()
     let reverbPlaybackButton = UIButton()
     let echoPlaybackButton = UIButton()
+    let audioEngineSingleton = AudioEngine.sharedInstance
     
     var recordedAudioURL: URL!
     var audioFile: AVAudioFile!
@@ -41,7 +42,6 @@ class PlaybackViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         playBackButton.addTarget(self, action: #selector(playSoundForButton(_:)), for: .touchUpInside)
-        setupAudio()
         setupUI()
     }
     
@@ -121,25 +121,53 @@ class PlaybackViewController: UIViewController {
     @objc func playSoundForButton(_ sender: UIButton) {
         switch(ButtonType(rawValue: sender.tag)!) {
         case .slow:
-            playSound(rate: 0.5)
+            audioEngineSingleton.playSound(rate: 0.5)
         case .fast:
-            playSound(rate: 1.5)
+            audioEngineSingleton.playSound(rate: 1.5)
         case .chipmunk:
-            playSound(pitch: 1000)
+            audioEngineSingleton.playSound(pitch: 1000)
         case .vader:
-            playSound(pitch: -1000)
+            audioEngineSingleton.playSound(pitch: -1000)
         case .echo:
-            playSound(echo: true)
+            audioEngineSingleton.playSound(echo: true)
         case .reverb:
-            playSound(reverb: true)
+            audioEngineSingleton.playSound(reverb: true)
         }
 
         configureUI(.playing)
     }
     
+    func configureUI(_ playState: AudioEngineState) {
+        switch(playState) {
+        case .playing:
+            setPlayButtonsEnabled(false)
+            playBackButton.isEnabled = true
+        case .notPlaying:
+            setPlayButtonsEnabled(true)
+            playBackButton.isEnabled = false
+        case .recording:
+            print("Never should hit this point on play back screen")
+        }
+    }
+    
+    func setPlayButtonsEnabled(_ enabled: Bool) {
+        slowPlaybackButton.isEnabled = enabled
+        squeakyPlaybackButton.isEnabled = enabled
+        fastPlaybackButton.isEnabled = enabled
+        darthVaderPlaybackButton.isEnabled = enabled
+        echoPlaybackButton.isEnabled = enabled
+        reverbPlaybackButton.isEnabled = enabled
+    }
+    
     @objc func playBackButtonAction(_ sender: UIButton) {
-        stopAudio()
+        audioEngineSingleton.stopPlaying()
         configureUI(.notPlaying)
+    }
+    
+    func showAlert(_ title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Alerts.DismissAlert, style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     //MARK: - Add Constraints
