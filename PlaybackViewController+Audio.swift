@@ -27,10 +27,6 @@ extension PlaybackViewController: AVAudioPlayerDelegate {
         static let AudioEngineError = "Audio Engine Error"
     }
     
-    // MARK: PlayingState (raw values correspond to sender tags)
-    
-    enum PlayingState { case playing, notPlaying }
-    
     // MARK: Audio Functions
     
     func setupAudio() {
@@ -150,6 +146,8 @@ extension PlaybackViewController: AVAudioPlayerDelegate {
         case .notPlaying:
             setPlayButtonsEnabled(true)
             playBackButton.isEnabled = false
+        case .recording:
+            print("Should never get here")
         }
     }
     
