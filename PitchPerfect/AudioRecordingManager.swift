@@ -20,9 +20,9 @@ class AudioRecordingManager {
         return filePath
     }
     
-    public func createAudioRecording(){
-        guard let audioRecordingURL = createAudioRecordingURL() else { return }
-        AudioEngine.sharedInstance.setupRecorder(fileURL: audioRecordingURL)
-        AudioEngine.sharedInstance.record()
-    }
+//    public func createAudioRecording() {
+//        guard let audioRecordingURL = createAudioRecordingURL() else { return }
+//        AudioEngine.sharedInstance.setupRecorder(fileURL: audioRecordingURL)
+//        AudioEngine.sharedInstance.record()
+//    }
 }

@@ -36,74 +36,84 @@ class RecordingViewController: UIViewController {
         recordButton.isEnabled = false
         recordMessageLabel.text = NSLocalizedString("Recording In Progress", comment: "There is a current audio recordding")
         
-//        let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
-//        let recordingName = "recordedVoice.wav"
-//        let pathArray = [dirPath, recordingName]
-//        let filePath = URL(string: pathArray.joined(separator: "/"))
-//
-//        let session = AVAudioSession.sharedInstance()
-//        try! session.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
-//
-//        try! audioRecorder = AVAudioRecorder(url: filePath!, settings: [:])
-//        audioRecorder.delegate = self
-//        audioRecorder.isMeteringEnabled = true
-//        audioRecorder.prepareToRecord()
-//        audioRecorder.record()
+        //        let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
+        //        let recordingName = "recordedVoice.wav"
+        //        let pathArray = [dirPath, recordingName]
+        //        let filePath = URL(string: pathArray.joined(separator: "/"))
+        //
+        //        let session = AVAudioSession.sharedInstance()
+        //        try! session.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.default, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
+        //
+        //        try! audioRecorder = AVAudioRecorder(url: filePath!, settings: [:])
+        //        audioRecorder.delegate = self
+        //        audioRecorder.isMeteringEnabled = true
+        //        audioRecorder.prepareToRecord()
+        //        audioRecorder.record()
+        
+//        if let url = AudioRecordingManager.sharedInstance.createAudioRecordingURL() {
+//            AudioEngine.sharedInstance.setupRecorder(fileURL: url)
+//            AudioEngine.sharedInstance.record()
+//        } else {
+//            print("No url")
+//        }
         
         if let url = AudioRecordingManager.sharedInstance.createAudioRecordingURL() {
-            AudioEngine.sharedInstance.setupRecorder(fileURL: url)
-            AudioEngine.sharedInstance.record()
-        } else {
-            print("No url")
+            AudioEngine.sharedInstance.setupRecorder(fileURL: url) {
+                AudioEngine.sharedInstance.record()
+                let playbackViewController = PlaybackViewController()
+                guard let audioRecordingURL = AudioRecordingManager.sharedInstance.createAudioRecordingURL() else { return }
+                playbackViewController.recordedAudioURL = audioRecordingURL
+                self.navigationController?.pushViewController(playbackViewController, animated: true)
+            }
         }
     }
-    
-    @objc func stopRecordingButtonAction(_ sender: AnyObject) {
-        stopRecordingButton.isEnabled = false
-        recordButton.isEnabled = true
-        recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
         
-        AudioEngine.sharedInstance.stop()
+        @objc func stopRecordingButtonAction(_ sender: AnyObject) {
+            stopRecordingButton.isEnabled = false
+            recordButton.isEnabled = true
+            recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
+            
+            AudioEngine.sharedInstance.stop()
+            
+            let playbackViewController = PlaybackViewController()
+            self.navigationController?.pushViewController(playbackViewController, animated: true)
+        }
         
-        let playbackViewController = PlaybackViewController()
-        self.navigationController?.pushViewController(playbackViewController, animated: true)
+        func setupUI() {
+            recordingStackView.axis = .vertical
+            recordingStackView.alignment = .center
+            recordingStackView.distribution = .fill
+            recordingStackView.spacing = 8
+            
+            recordButton.sizeToFit()
+            recordButton.setImage(UIImage(named: "RecordButton"), for: .normal)
+            
+            recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
+            recordMessageLabel.textColor = .black
+            recordMessageLabel.textAlignment = .center
+            
+            stopRecordingButton.setImage(UIImage(named: "Stop"), for: .normal)
+            
+            view.addSubview(recordingStackView)
+            recordingStackView.addArrangedSubview(recordButton)
+            recordingStackView.addArrangedSubview(recordMessageLabel)
+            recordingStackView.addArrangedSubview(stopRecordingButton)
+            
+            setupConstraints()
+        }
+        
+        func setupConstraints() {
+            recordingStackView.translatesAutoresizingMaskIntoConstraints = false
+            stopRecordingButton.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate(
+                [
+                    recordingStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    recordingStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                    stopRecordingButton.widthAnchor.constraint(equalToConstant: Constants.stopRecordingImageWidth),
+                    stopRecordingButton.heightAnchor.constraint(equalToConstant: Constants.stopRecordingImageHeight)
+                ]
+            )
+        }
+        
     }
-    
-    func setupUI() {
-        recordingStackView.axis = .vertical
-        recordingStackView.alignment = .center
-        recordingStackView.distribution = .fill
-        recordingStackView.spacing = 8
-        
-        recordButton.sizeToFit()
-        recordButton.setImage(UIImage(named: "RecordButton"), for: .normal)
-        
-        recordMessageLabel.text = NSLocalizedString("Tap To Record", comment: "User taps record button to start recording")
-        recordMessageLabel.textColor = .black
-        recordMessageLabel.textAlignment = .center
-        
-        stopRecordingButton.setImage(UIImage(named: "Stop"), for: .normal)
-        
-        view.addSubview(recordingStackView)
-        recordingStackView.addArrangedSubview(recordButton)
-        recordingStackView.addArrangedSubview(recordMessageLabel)
-        recordingStackView.addArrangedSubview(stopRecordingButton)
-        
-        setupConstraints()
-    }
-    
-    func setupConstraints() {
-        recordingStackView.translatesAutoresizingMaskIntoConstraints = false
-        stopRecordingButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate(
-            [
-                recordingStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                recordingStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-                stopRecordingButton.widthAnchor.constraint(equalToConstant: Constants.stopRecordingImageWidth),
-                stopRecordingButton.heightAnchor.constraint(equalToConstant: Constants.stopRecordingImageHeight)
-            ]
-        )
-    }
-    
-}

@@ -25,12 +25,13 @@ class AudioEngine: NSObject {
     private var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
     private let audioRecordingSession = AVAudioSession.sharedInstance()
+    private var didFinishRecording: (() -> Void)?
     
     private override init() {}
     
     // Intializing audioRecorder here to make clear
     // when I'm initializing the audioRecorder and actually recording
-    public func setupRecorder(fileURL: URL) {
+    public func setupRecorder(fileURL: URL, completion: @escaping () -> Void) {
         do {
             audioRecorder = try AVAudioRecorder(url: fileURL, settings: [:])
             audioRecorder?.delegate = self
@@ -42,6 +43,7 @@ class AudioEngine: NSObject {
             }
         }
         
+        didFinishRecording = completion
     }
     
     public func record() {
@@ -79,8 +81,6 @@ class AudioEngine: NSObject {
 
 extension AudioEngine: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        let playbackViewController = PlaybackViewController()
-        guard let audioRecordingURL = AudioRecordingManager.sharedInstance.createAudioRecordingURL() else { return }
-        playbackViewController.recordedAudioURL = audioRecordingURL
+        didFinishRecording?()
     }
 }
